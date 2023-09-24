@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { useState } from "react";
 import CreateCabinForm from "./createCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const TableRow = styled.div`
   display: grid;
@@ -44,13 +45,11 @@ const Discount = styled.div`
 `;
 
 export default function CabinRow({ cabin }) {
-    const [showForm, setShowForm] = useState(false)
     const { isDeleting, deleteCabin } = useDeleteCabin();
 
     const { name, maxCapacity, regularPrice, discount, image } = cabin;
 
     return (
-      <>
         <TableRow role="row">
           <Img src={image}/>
           <Cabin>{name}</Cabin>
@@ -58,12 +57,26 @@ export default function CabinRow({ cabin }) {
           <Price>{formatCurrency(regularPrice)}</Price>
           {discount ? (<Discount>{formatCurrency(discount)}</Discount>) : (<span>&mdash;</span>)}
           <div>
-            <button onClick={()=>setShowForm((show)=>!show)}>Edit</button>
-            <button onClick={()=>deleteCabin(cabin.id)} disabled={isDeleting}>Delete</button>
+            <Modal>
+              <Modal.Open opens="edit">
+                <button>Edit</button>
+              </Modal.Open>
+              <Modal.Window name="edit">
+                <CreateCabinForm cabinToEdit={cabin}/>
+              </Modal.Window>
+              <Modal.Open>
+                <button>Delete</button>
+              </Modal.Open>
+              <Modal.Window>
+                <ConfirmDelete 
+                  resourceName="cabins"
+                  disabled={isDeleting}
+                  onConfirm={()=>deleteCabin(cabin.id)}
+                />
+              </Modal.Window>
+              
+            </Modal>
           </div>
         </TableRow>
-        {showForm && <CreateCabinForm cabinToEdit={cabin}/>}
-      </>
-        
     )
 }
