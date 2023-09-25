@@ -12,12 +12,12 @@ export async function getCabins () {
 }
 
 export async function createEditCabin (newCabin, id) {
-    const hasImagePath = newCabin.image.startsWith(supabaseUrl)
+    const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl)
     const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
         "/",
         ""
     )
-    const imagePath = hasImagePath ? `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}` : newCabin.image
+    const imagePath = hasImagePath ? newCabin.image: `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`
     //1.create cabin
     let query = supabase.from('cabins')
     //A. create
