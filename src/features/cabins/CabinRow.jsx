@@ -5,6 +5,8 @@ import { useDeleteCabin } from "./useDeleteCabin";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Table from "../../ui/Table";
+import Menus from "../../ui/Menus";
+import { HiPencil, HiTrash } from "react-icons/hi2";
 
 // const TableRow = styled.div`
 //   display: grid;
@@ -59,23 +61,27 @@ export default function CabinRow({ cabin }) {
           {discount ? (<Discount>{formatCurrency(discount)}</Discount>) : (<span>&mdash;</span>)}
           <div>
             <Modal>
-              <Modal.Open opens="edit">
-                <button>Edit</button>
-              </Modal.Open>
-              <Modal.Window name="edit">
-                <CreateCabinForm cabinToEdit={cabin}/>
+              <Menus.Menu>
+                <Menus.Toggle id={cabin.id}/>
+                <Menus.List id={cabin.id}>
+                  <Modal.Open opens="edit">
+                    <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                  </Modal.Open>
+                  <Modal.Open opens="delete">
+                    <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                  </Modal.Open>
+                </Menus.List>
+                <Modal.Window name="edit">
+                  <CreateCabinForm cabinToEdit={cabin}/>
+                </Modal.Window>
+                <Modal.Window name="delete">
+                  <ConfirmDelete 
+                    resourceName="cabins"
+                    disabled={isDeleting}
+                    onConfirm={()=>deleteCabin(cabin.id)}
+                  />
               </Modal.Window>
-              <Modal.Open>
-                <button>Delete</button>
-              </Modal.Open>
-              <Modal.Window>
-                <ConfirmDelete 
-                  resourceName="cabins"
-                  disabled={isDeleting}
-                  onConfirm={()=>deleteCabin(cabin.id)}
-                />
-              </Modal.Window>
-              
+              </Menus.Menu>
             </Modal>
           </div>
         </Table.Row>
