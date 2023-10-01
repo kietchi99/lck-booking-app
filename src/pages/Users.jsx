@@ -1,5 +1,9 @@
-function Users () {
-    return (<div>Users</div>)
+import SignupForm from "../features/authentication/SignupForm"
+
+function NewUsers () {
+    return (
+        <SignupForm />
+    )
 }
 
-export default Users
+export default NewUsers
